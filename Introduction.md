@@ -1,4 +1,4 @@
-# Introduction
+# System Design
 
 ## What is System Design?
 
@@ -88,25 +88,7 @@ Distinguish between functional requirements—what the system must do—and non-
 
 A useful framework for eliciting requirements is the **Scale-Queries-Architecture (SQA) method**:
 
-```
-Scale:
-├── How many users will the system support?
-├── How many requests per second at peak?
-├── How much data will be stored, and how fast will it grow?
-└── What are the geographic distribution requirements?
-
-Queries:
-├── What operations will users perform most frequently?
-├── What are the latency requirements for different operations?
-├── Do queries tend to be simple or complex?
-└── Will users need search, filtering, or aggregations?
-
-Architecture:
-├── What are the consistency requirements?
-├── What is the availability target?
-├── Are there specific technology requirements or preferences?
-└── What is the team's operational capability?
-```
+![Scale-Queries-Architecture (SQA) Framework](Images/SQA-Method-Framework.png)
 
 #### Step 2: Identify the Scope of the System
 
@@ -140,28 +122,7 @@ At this stage, resist the temptation to specify technology choices. Focus on con
 
 The high-level design should address the core concerns identified in scope definition:
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    HIGH-LEVEL DESIGN CHECKLIST                │
-│                                                             │
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐   │
-│  │ Data Layer    │  │ Processing    │  │ Delivery      │   │
-│  │               │  │ Layer         │  │ Layer         │   │
-│  │ How is data   │  │ How are       │  │ How do users  │   │
-│  │ stored and    │  │ requests      │  │ access the    │   │
-│  │ retrieved?    │  │ processed?    │  │ system?       │   │
-│  └───────────────┘  └───────────────┘  └───────────────┘   │
-│                                                             │
-│  ┌───────────────┐  ┌───────────────┐  ┌───────────────┐   │
-│  │ Reliability   │  │ Scalability   │  │ Monitoring    │   │
-│  │               │  │               │  │               │   │
-│  │ How does the  │  │ How does the  │  │ How do we    │   │
-│  │ system handle │  │ system handle │  │ know the     │   │
-│  │ failures?    │  │ growth?       │  │ system is     │   │
-│  │               │  │               │  │ working?      │   │
-│  └───────────────┘  └───────────────┘  └───────────────┘   │
-└─────────────────────────────────────────────────────────────┘
-```
+![High-Level Design Checklist](Images/High-Level-Design-Checklist.png)
 
 #### Step 5: Refine and Iterate the Design
 
@@ -198,3 +159,209 @@ Identify and address bottlenecks. Even well-designed systems encounter bottlenec
 Plan for evolution. System design is not a one-time activity but a continuous process of refinement. As the system grows, some design decisions that worked well at small scale will need to be revisited. Planning for this evolution—building modularity, maintaining flexibility, documenting decisions—makes future changes easier.
 
 ---
+
+## Key System Design Terminology
+
+Familiarity with key terminology enables precise communication about system design concepts. These terms appear frequently in system design discussions and interviews.
+
+### Scale and Performance
+
+**Horizontal Scaling** (Scale Out) refers to increasing system capacity by adding more machines to a pool. This contrasts with vertical scaling (scale up), which increases capacity by adding more resources to a single machine. Horizontal scaling is generally preferred for systems requiring high availability and elastic capacity because it offers near-linear scalability and no single point of failure, though it introduces complexity in data distribution and coordination.
+
+**Vertical Scaling** (Scale Up) means adding more CPU, memory, or storage to an existing machine. It is simpler than horizontal scaling because all components continue to operate on a single machine, but it has natural limits and creates a single point of failure.
+
+**Load Balancing** distributes incoming traffic across multiple servers to ensure no single server becomes overwhelmed. Load balancers can operate at different layers of the network stack and use various algorithms including round-robin, least connections, and IP hash.
+
+**Caching** stores frequently accessed data in memory to reduce latency and load on backend systems. Effective caching can improve performance by orders of magnitude for read-heavy workloads. Common caching patterns include cache-aside, write-through, and write-behind.
+
+**Sharding** (horizontal partitioning) divides data across multiple databases or tables, with each shard containing a subset of the total data. Sharding enables horizontal scaling of data storage but introduces complexity in query routing and cross-shard operations.
+
+**Replication** maintains multiple copies of data across different nodes. Replication can be synchronous, where writes are complete only when confirmed by all replicas, or asynchronous, where writes are confirmed immediately and propagated later. Replication provides both redundancy for reliability and additional read capacity.
+
+### Reliability and Availability
+
+**Redundancy** involves having multiple copies of critical components so that failure of any single component does not cause system failure. Redundancy can be implemented at the hardware level (multiple power supplies, multiple network paths), the application level (multiple application instances), or the data level (multiple data copies).
+
+**Failover** is the automatic or manual transfer of operations from a failed component to a standby component. Active-passive failover keeps a standby ready to take over, while active-active failover runs multiple components simultaneously and distributes load across them.
+
+**Circuit Breaker** prevents cascading failures by stopping requests to a failing service. When a circuit breaker detects that a downstream service is failing, it "opens" and immediately returns an error rather than waiting for timeouts, preventing resource exhaustion and allowing the failing service time to recover.
+
+**Bulkhead** isolates different parts of a system so that failure in one part does not affect others. The term comes from ship design, where bulkheads prevent flooding in one section from sinking the entire ship.
+
+**Graceful Degradation** ensures that a system can continue operating with reduced functionality when some components fail. Rather than complete system failure, graceful degradation allows users to continue accessing core features while non-essential features are unavailable.
+
+### Data Management
+
+**ACID** is an acronym for the four properties guaranteed by traditional database transactions: Atomicity (all-or-nothing execution), Consistency (maintaining valid state), Isolation (concurrent execution appears sequential), and Durability (once committed, data survives failures).
+
+**BASE** describes the properties of many distributed, eventually consistent systems: Basically Available (the system guarantees availability), Soft state (state may change over time), Eventually consistent (system will become consistent given time without updates).
+
+**CAP Theorem** states that a distributed system can provide only two of three guarantees: Consistency, Availability, and Partition Tolerance. Since network partitions are unavoidable in distributed systems, the real choice is typically between consistency and availability.
+
+**CQRS** (Command Query Responsibility Segregation) separates read and write operations into different models, allowing each to be optimized independently. Writes update a command model; reads query a separate query model that may be updated asynchronously.
+
+**Event Sourcing** stores system state as a sequence of events rather than current state. This provides a complete audit trail and enables powerful analytics but requires different implementation approaches.
+
+### Communication Patterns
+
+**Synchronous Communication** involves the caller waiting for a response before continuing. This pattern is simple but can create tight coupling and cascade failures when services depend on each other.
+
+**Asynchronous Communication** decouples producers from consumers using message queues or event systems. This pattern improves resilience and scalability but complicates debugging and requires handling of out-of-order or duplicate messages.
+
+**REST** (Representational State Transfer) is an architectural style for web services that uses standard HTTP methods and resource-based URLs. REST is widely adopted and well-understood but may not be optimal for all use cases.
+
+**gRPC** is a high-performance RPC framework that uses Protocol Buffers for serialization and HTTP/2 for transport. gRPC offers significant performance advantages over REST for internal service communication but has less tooling support and browser compatibility.
+
+---
+
+## Interview Preparation: Key Questions
+
+System design interviews typically follow a predictable pattern and cover common themes. Understanding these patterns helps you prepare effectively.
+
+### Common Interview Formats
+
+**Open-Ended Design**: The interviewer presents a system (e.g., "Design Twitter") and you work through the design collaboratively. This format tests your methodology as much as your knowledge. The interviewer wants to see how you think, how you handle ambiguity, and how you make trade-offs.
+
+**Component Deep-Dive**: The interviewer focuses on a specific component (e.g., "How would you design the caching layer for a news feed?"). This format tests detailed knowledge of particular technologies and patterns.
+
+**Trade-Off Discussion**: The interviewer asks about trade-offs between approaches (e.g., "When would you choose Cassandra over PostgreSQL?"). This format tests judgment and understanding of real-world constraints.
+
+**Scale-Up Challenge**: The interviewer asks how you would modify an existing design to handle significantly more load (e.g., "How would you scale this from 10,000 to 10 million users?"). This format tests your understanding of scalability patterns.
+
+### What Interviewers Look For
+
+Beyond correct answers, interviewers evaluate several factors that often matter more than technical correctness.
+
+**Methodology**: Can you approach the problem systematically? Do you gather requirements before proposing solutions? Do you consider trade-offs? Do you iterate and refine?
+
+**Communication**: Can you explain complex concepts clearly? Do you ask clarifying questions? Do you keep the interviewer engaged and informed about your thinking?
+
+**Collaboration**: Are you open to feedback? Do you incorporate interviewer hints? Do you treat the interview as a collaborative problem-solving session rather than a test?
+
+**Judgment**: Do you make reasonable assumptions? Can you justify your decisions? Do you recognize when a simple solution is appropriate versus when complexity is necessary?
+
+**Breadth and Depth**: Do you know about a wide range of patterns and technologies? Can you explain them in depth when relevant?
+
+### Common Pitfalls to Avoid
+
+**Analysis Paralysis**: Spending too much time on early steps and rushing later steps. Interviewers notice when you run out of time for important topics.
+
+**Ignoring Constraints**: Jumping to complex solutions when simple ones would work. Not every system needs microservices, sharding, and real-time processing.
+
+**Technology-Driven Thinking**: Starting with technology choices (e.g., "I'll use Kafka") before understanding requirements. Technology should serve requirements, not the reverse.
+
+**Missing the Big Picture**: Getting lost in details of one component while losing sight of overall system design. Interviewers want to see the forest, not just trees.
+
+**Ignoring Trade-Offs**: Presenting solutions as if they have no downsides. Every design choice involves trade-offs, and acknowledging them shows mature thinking.
+
+---
+
+## Essential Study Roadmap
+
+System design is a broad topic, and knowing where to focus your study time yields better results than trying to learn everything equally.
+
+### Tier 1: Must-Know Fundamentals
+
+These topics form the foundation of system design and appear in virtually every system design discussion.
+
+**Performance vs. Scalability**: Understanding the difference between making a system faster and making a system handle more load is fundamental. Many engineers confuse these concepts, leading to solutions that address the wrong problem.
+
+**Latency vs. Throughput**: Latency measures how long it takes to perform an operation; throughput measures how many operations can be performed per unit time. Optimizing for one can harm the other.
+
+**Availability vs. Consistency**: The CAP theorem and its implications. Understanding that distributed systems must trade off consistency for availability during network partitions.
+
+**Load Balancing**: How to distribute load across multiple servers, including algorithms, layers (L4 vs L7), and health checking.
+
+**Caching**: How caching improves performance, where to cache, and how to maintain consistency between cache and source of truth.
+
+### Tier 2: Core Technologies
+
+These are the building blocks of most distributed systems. Understanding when and how to use each is essential.
+
+**Databases**: SQL vs. NoSQL trade-offs, replication, sharding, indexing, and query optimization.
+
+**Message Queues**: How asynchronous communication enables loose coupling, fault tolerance, and scalability.
+
+**CDNs**: How content delivery networks reduce latency and offload traffic from origin servers.
+
+**DNS**: How domain name resolution works and how to use DNS for load balancing and failover.
+
+### Tier 3: Advanced Patterns
+
+These topics build on the fundamentals and enable sophisticated system designs.
+
+**Microservices**: Service decomposition, inter-service communication, and distributed systems challenges.
+
+**CAP Theorem Variants**: PACELC, eventual consistency, and consistency models.
+
+**Advanced Caching**: Cache invalidation strategies, distributed caching, and consistency trade-offs.
+
+### Tier 4: Deep Dives
+
+These topics are important for specific use cases or for demonstrating advanced knowledge.
+
+**Distributed Transactions**: Sagas, two-phase commit, and consistency trade-offs.
+
+**Consensus Algorithms**: Raft, Paxos, and how distributed systems achieve agreement.
+
+**Advanced Messaging Patterns**: Event sourcing, CQRS, and event-driven architecture.
+
+---
+
+## Common Mistakes and How to Avoid Them
+
+Learning from others' mistakes accelerates your progress in system design. These common errors appear frequently in both interviews and real-world projects.
+
+**Designing for the Wrong Scale**: Building elaborate distributed systems for problems that do not require them. Complexity has costs, and simple solutions should be preferred when they suffice. The best architecture is the simplest one that meets requirements.
+
+**Ignoring Operational Complexity**: Designing systems that are theoretically elegant but operationally burdensome. A system that requires constant attention, complex deployment procedures, or specialized expertise may not be sustainable.
+
+**Underestimating Importance of Data**: Failing to think carefully about data modeling, access patterns, and growth. Data is often the most valuable asset and the most difficult aspect of a system to change.
+
+**Treating Design as Permanent**: Failing to design for change. Requirements change, scale changes, and the best-designed systems accommodate evolution without requiring complete redesign.
+
+**Neglecting Failure Modes**: Designing as if nothing will ever fail. Every component fails eventually, and the question is only how gracefully the system degrades.
+
+---
+
+## Key Takeaways
+
+System design is not about memorizing solutions to specific problems but about developing a framework for thinking about complex systems. The patterns and principles you learn in system design apply across technologies and domains, making them valuable investments that pay dividends throughout your career.
+
+The four pillars—scalability, reliability, maintainability, and availability—provide a framework for evaluating design decisions. When you propose or evaluate a design, ask how it affects each of these properties. Trade-offs are inevitable, and being explicit about them demonstrates mature engineering judgment.
+
+Approaching system design systematically—understanding requirements, defining scope, researching existing solutions, creating high-level designs, iterating, documenting, and planning for evolution—leads to better outcomes than ad-hoc decision-making.
+
+Real-world systems provide invaluable lessons. Studying how companies like Amazon, Google, Netflix, and Twitter solved their scaling challenges reveals patterns and principles that transfer across contexts.
+
+System design skills develop through practice. Working through design problems, discussing solutions with others, and studying real-world systems all contribute to building expertise. There is no shortcut, but focused practice yields faster progress than unfocused exposure.
+
+Finally, remember that the goal of system design is not architectural perfection but good enough design for the context. The best architecture is the one that meets current requirements, accommodates reasonable future changes, and can be implemented and operated by available resources. Perfection is the enemy of progress, and system design is fundamentally about making pragmatic decisions under uncertainty.
+
+---
+
+## Actionable Next Steps
+
+### Immediate Actions (Next 24 Hours)
+
+1. **[30 minutes]** Review the roadmap of topics covered in these notes. Identify which topics you already understand well and which need more study.
+
+2. **[45 minutes]** Pick one real-world system you use regularly (Twitter, Netflix, Amazon, etc.) and analyze it using the seven-step framework. Write down the major components, how they communicate, and what trade-offs you observe.
+
+3. **[20 minutes]** Review your notes on performance vs. scalability. Be prepared to explain the difference clearly in under two minutes.
+
+4. **[15 minutes]** Identify one topic from the roadmap that you find confusing or intimidating. Research it enough to explain it simply to someone else.
+
+### Deep-Dive Topics (If Time Permits)
+
+- **Case Study: How Netflix Scales**: Read about Netflix's journey from monolithic architecture to microservices.
+
+- **Case Study: How Amazon Built AWS**: Understand the architectural evolution that led to cloud computing services.
+
+- **System Design for Beginners**: Work through simpler system design problems to build confidence before tackling complex scenarios.
+
+- **Real-World Post-Mortems**: Study incident post-mortems from companies like Google, Amazon, and Cloudflare to understand real failure modes.
+
+---
+
+> **Final Thought**: System design is both an art and a science. The science involves understanding patterns, trade-offs, and technologies. The art involves judgment about which combination fits a particular context. Both develop through study and practice. Your notes represent the science; applying them will develop the art.
