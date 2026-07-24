@@ -254,7 +254,6 @@ flowchart TD
 
 **Synchronous Chatty I/O** performs many small synchronous operations instead of fewer larger ones. Each operation incurs latency for connection, request, and response. The cumulative effect dramatically reduces throughput.
 
-
 **Premature Optimization** addresses latency or throughput issues without measurement. Optimizing the wrong bottleneck wastes effort and may introduce complexity without benefit.
 
 **Ignoring the Bottleneck** optimizes resources that are not limiting throughput. Throughput is only as good as the weakest bottleneck; optimizing elsewhere provides no improvement.
