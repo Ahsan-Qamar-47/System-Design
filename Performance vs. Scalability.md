@@ -12,7 +12,7 @@ Consider a highway as an analogy. A performance problem is like a road where the
 
 A **performance problem** manifests as slow response times regardless of load. Your system is inefficient even when handling minimal traffic. This is analogous to an engine that gets poor gas mileage regardless of how much cargo it carries—the fundamental efficiency is low.
 
-![Performance Problem](./Images/Performance-Problem.png)
+![Performance Problem](./images/Performance-Problem.png)
 
 Real-world examples of performance problems include inefficient database queries that full-scan tables, code that performs unnecessary computations, serialization bottlenecks that waste CPU cycles, and synchronous operations that block resources unnecessarily. A database query that takes 10 seconds to execute is a performance problem—it takes 10 seconds whether it runs once per day or a thousand times per second.
 
@@ -20,7 +20,7 @@ Real-world examples of performance problems include inefficient database queries
 
 A **scalability problem** manifests as degradation under load. Your system works fine at small scale but fails or becomes unresponsive as traffic increases. This is analogous to a bridge that can handle normal traffic but collapses under the weight of rush hour congestion—it is not inherently weak, but it cannot handle the increased demand.
 
-![Scalability Problem](./Images/Scalability-Problem.png)
+![Scalability Problem](./images/Scalability-Problem.png)
 
 Real-world examples of scalability problems include single-threaded servers that cannot use multiple CPU cores, databases that cannot distribute load across multiple machines, and session storage that relies on single-server memory. A system that handles 100 concurrent users perfectly but falls over at 1,000 has a scalability problem, not necessarily a performance problem.
 
@@ -48,7 +48,7 @@ Performance is measured through several key metrics that capture different aspec
 
 **Latency** is the time it takes to complete a single operation. It is typically measured in milliseconds or microseconds and represents the delay between initiating a request and receiving a response. Low latency means fast individual operations; high latency means slow individual operations.
 
-![Latency Numbers Every Programmer Should Know](./Images/Latency-Numbers-Every-Programmer-Should-Know.png)
+![Latency Numbers Every Programmer Should Know](./images/Latency-Numbers-Every-Programmer-Should-Know.png)
 
 **Throughput** is the number of operations a system can complete per unit of time. It is typically measured in requests per second (RPS), transactions per second (TPS), or operations per second (OPS). High throughput means the system can handle many operations simultaneously; low throughput means the system is bottlenecked.
 
@@ -76,7 +76,7 @@ Scalability improvements typically involve changing the system's architecture to
 
 Scalability manifests in several different dimensions, and a system that scales well in one dimension may scale poorly in another.
 
-![Vertical Scaling Trade-offs](./Images/Vertical-Scaling-Trade-offs.png)
+![Vertical Scaling Trade-offs](./images/Vertical-Scaling-Trade-offs.png)
 
 Example: Upgrading from 4-core to 32-core server
 - Not 8x faster (Amdahl's Law limits)
@@ -84,7 +84,7 @@ Example: Upgrading from 4-core to 32-core server
 
 **Horizontal Scalability (Scale Out)** involves adding more machines to the system. This is the preferred approach for large-scale systems because it offers theoretically unlimited capacity and eliminates single points of failure. However, horizontal scalability introduces complexity in data distribution, consistency, and coordination.
 
-![Horizontal Scaling Trade-offs](./Images/Horizontal-Scaling-Trade-offs.png)
+![Horizontal Scaling Trade-offs](./images/Horizontal-Scaling-Trade-offs.png)
 
 Example: Adding 10 application servers instead of 1 big server
 - Can handle ~10x traffic
@@ -97,7 +97,7 @@ Several architectural patterns enable horizontal scalability by removing bottlen
 
 **Stateless Design** removes server-side state so that any request can be handled by any server. When servers do not maintain client state, load balancers can distribute traffic freely and servers can be added or removed without impact.
 
-![Stateful vs Stateless](./Images/Stateful-vs-Stateless.png)
+![Stateful vs Stateless](./images/Stateful-vs-Stateless.png)
 
 **Data Partitioning** divides data across multiple databases or tables so that each partition handles only a fraction of the total load. This enables write scalability for systems where a single database cannot handle all writes.
 
@@ -163,7 +163,7 @@ Raw response time averages can be misleading because they obscure the distributi
 
 **Percentiles** divide response times into groups. The 50th percentile (P50) is the median—half of requests complete faster, half slower. The 95th percentile (P95) means 95% of requests complete faster; 5% are slower. The 99th percentile (P99) means 99% of requests complete faster.
 
-![Response Time Distribution](./Images/Response-Time-Distribution.png)
+![Response Time Distribution](./images/Response-Time-Distribution.png)
 
 **Why percentiles matter**: Users who experience slow requests are often the ones who abandon your service. A system that is fast for 99% of requests but takes 10 seconds for 1% will have frustrated users, even though the average looks good.
 
@@ -173,7 +173,7 @@ Raw response time averages can be misleading because they obscure the distributi
 
 SLOs define the performance targets that a system must meet. They provide concrete goals for optimization efforts and criteria for determining when a system is operating acceptably.
 
-![Example SLOs](./Images/Example-SLOs.png)
+![Example SLOs](./images/Example-SLOs.png)
 
 **SLO vs SLA**: SLOs are internal targets you set for your system. SLAs (Service Level Agreements) are contractual commitments to customers. SLAs are typically slightly more lenient than SLOs to provide a buffer.
 
@@ -214,7 +214,7 @@ If you double your database size, you should handle twice the data.
 
 In practice, perfect linearity is rarely achieved. **Amdahl's Law** describes why: the speedup of a parallel system is limited by the portion that cannot be parallelized.
 
-![Amdahls Law Example](./Images/Amdahls-Law-Example.png)
+![Amdahls Law Example](./images/Amdahls-Law-Example.png)
 
 ### Planning for Growth
 
@@ -236,7 +236,7 @@ Capacity planning should answer several key questions:
 
 Consider an e-commerce platform experiencing slow checkout times. Analysis reveals the database can process 1,000 queries per second but the application is generating 2,000 queries per second.
 
-![Database Bottleneck Diagnosis](./Images/Database-Bottleneck-Diagnosis.png)
+![Database Bottleneck Diagnosis](./images/Database-Bottleneck-Diagnosis.png)
 
 This example illustrates that real systems often have both performance and scalability problems simultaneously. The query optimization improves performance for individual operations; the database scaling improves overall capacity.
 
@@ -244,7 +244,7 @@ This example illustrates that real systems often have both performance and scala
 
 A news website experiencing slow page load times during breaking news events. Analysis shows that the database is handling 10,000 queries per minute during peak, but most queries are for the same top stories.
 
-![Caching Win Solution](./Images/Caching-Win-Solution.png)
+![Caching Win Solution](./images/Caching-Win-Solution.png)
 
 Caching improves both performance (faster response) and scalability (reduced database load). This is often the highest-impact optimization available.
 
@@ -252,7 +252,7 @@ Caching improves both performance (faster response) and scalability (reduced dat
 
 A startup's monolithic application running on a single large server is experiencing growing pains. Response times are degrading as the user base grows, and the single server is approaching capacity limits.
 
-![Transition to Horizontal Scaling](./Images/Transition-to-Horizontal-Scaling.png)
+![Transition to Horizontal Scaling](./images/Transition-to-Horizontal-Scaling.png)
 
 This transformation improves scalability dramatically but requires significant architectural changes: stateless application design, external session storage, database scaling, and load balancing infrastructure.
 

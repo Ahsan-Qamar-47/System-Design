@@ -14,7 +14,7 @@ The three primary consistency patterns—Weak Consistency, Eventual Consistency,
 
 Before diving into individual patterns, it's essential to understand where they fit in the broader consistency landscape. The consistency spectrum can be visualized as a continuum from weakest to strongest guarantees.
 
-![Consistency Spectrum](Images/consistency_spectrum.png)
+![Consistency Spectrum](images/consistency_spectrum.png)
 
 This spectrum illustrates the fundamental trade-off: as consistency guarantees strengthen, latency typically increases and availability may decrease. Conversely, weaker consistency patterns offer lower latency and higher availability but provide fewer correctness guarantees.
 
@@ -46,7 +46,7 @@ Implementing strong consistency in distributed systems requires sophisticated co
 
 **Single Leader Replication**: In this architecture, all writes must go through a single designated leader node. The leader coordinates all writes and ensures they are applied in a total order. Reads can be served by the leader or by followers that are guaranteed to be caught up. This model is used by PostgreSQL logical replication, MySQL binlog-based replication, and Kafka's partitioned replication.
 
-![Single Leader Replication](Images/single_leader_replication.png)
+![Single Leader Replication](images/single_leader_replication.png)
 
 **Two-Phase Commit (2PC)**: This distributed transaction protocol ensures atomicity across multiple nodes. In the first phase (prepare), the coordinator asks all participants to promise to commit or abort. In the second phase (commit), if all participants voted yes, the coordinator instructs them to commit; otherwise, it instructs them to abort. Two-phase commit provides strong consistency but at the cost of blocking and latency.
 
@@ -56,7 +56,7 @@ Implementing strong consistency in distributed systems requires sophisticated co
 
 The Raft consensus algorithm works as follows:
 
-![Raft Consensus Replication](Images/raft_consensus_replication.png)
+![Raft Consensus Replication](images/raft_consensus_replication.png)
 
 **Distributed Locks**: Some systems implement strong consistency using distributed locking mechanisms. Tools like ZooKeeper or etcd can provide distributed locks that ensure only one node can modify data at a time. However, locks introduce contention and can become performance bottlenecks.
 
@@ -98,7 +98,7 @@ While strong consistency provides essential correctness guarantees, it comes wit
 
 **Complexity**: Implementing strong consistency correctly is notoriously difficult. Consensus algorithms like Raft and Paxos require careful handling of edge cases, timeouts, and recovery procedures.
 
-![Strong Consistency Trade-offs](Images/strong_consistency_tradeoffs.png)
+![Strong Consistency Trade-offs](images/strong_consistency_tradeoffs.png)
 
 ### Interview Questions
 
@@ -140,7 +140,7 @@ Eventual consistency is implemented through various replication strategies that 
 
 **Asynchronous Master-Slave Replication**: Writes go to a master node and are propagated to slaves via an asynchronous replication stream. The master acknowledges the write immediately after logging it locally; slaves receive updates through a background process. This is the replication model used by traditional MySQL and PostgreSQL replication.
 
-![Asynchronous Master-Slave Replication](Images/async_master_slave_replication.png)
+![Asynchronous Master-Slave Replication](images/async_master_slave_replication.png)
 
 **Anti-Entropy and Gossip Protocols**: Some systems periodically compare their state with other nodes to identify and repair inconsistencies. Amazon DynamoDB uses anti-entropy processes that run in the background to reconcile divergent partitions. Cassandra uses a gossip protocol where nodes periodically exchange state information to ensure consistency.
 
@@ -148,11 +148,11 @@ Eventual consistency is implemented through various replication strategies that 
 
 **Vector Clocks**: A mechanism for tracking causality in distributed systems. Vector clocks assign each node a timestamp that encodes the history of operations that have affected a data item. By comparing vector clocks, nodes can determine whether their values are causally related, older, or newer than each other.
 
-![Vector Clock Example](Images/vector_clock_example.png)
+![Vector Clock Example](images/vector_clock_example.png)
 
 **Quorum-Based Systems**: Systems like DynamoDB and Cassandra use quorum-based reads and writes. A write is acknowledged after W replicas acknowledge it; a read is performed from R replicas. If W + R > N (where N is the total number of replicas), reads are guaranteed to see the latest write.
 
-![Quorum Configuration](Images/quorum_configuration.png)
+![Quorum Configuration](images/quorum_configuration.png)
 
 ### Conflict Resolution Strategies
 
@@ -168,7 +168,7 @@ Because eventual consistency allows concurrent writes to different replicas, con
 
 **CRDTs (Conflict-Free Replicated Data Types)**: Data structures mathematically designed to converge regardless of the order of operations. Examples include G-counters (grow-only counters), LWW-registers, and OR-sets (observed-remove sets). CRDTs guarantee convergence without coordination.
 
-![CRDT G-Counter Example](Images/crdt_g_counter.png)
+![CRDT G-Counter Example](images/crdt_g_counter.png)
 
 ### Use Cases
 
@@ -210,7 +210,7 @@ Eventual consistency offers significant advantages but introduces challenges:
 
 **Mental Model Mismatch**: Developers accustomed to strongly consistent databases must fundamentally change their mental model when working with eventual consistency. Operations that seem "obvious" in a single-node database become complex in eventual consistency environments.
 
-![Eventual Consistency Trade-offs](Images/eventual_consistency_tradeoffs.png)
+![Eventual Consistency Trade-offs](images/eventual_consistency_tradeoffs.png)
 
 ### Interview Questions
 
@@ -268,7 +268,7 @@ Weak consistency is typically the default for systems optimized for maximum perf
 
 **Best-Effort Caching**: Data is cached with no guarantee of freshness. Cache misses might return stale data or miss data entirely.
 
-![Weak Consistency Fire and Forget Pattern](Images/weak_consistency_fire_and_forget.png)
+![Weak Consistency Fire and Forget Pattern](images/weak_consistency_fire_and_forget.png)
 
 **Approximate Computing**: Some systems compute approximate answers rather than exact ones. This is common in aggregation systems where exact precision isn't required.
 
@@ -314,7 +314,7 @@ Weak consistency represents the extreme end of the consistency spectrum:
 
 **Application Burden**: Applications using weak consistency must handle arbitrary staleness, lost updates, and the absence of any ordering guarantees.
 
-![Weak Consistency Trade-offs](Images/weak_consistency_tradeoffs.png)
+![Weak Consistency Trade-offs](images/weak_consistency_tradeoffs.png)
 
 ### Interview Questions
 
@@ -348,13 +348,13 @@ A: "The key distinction is convergence. Eventual consistency guarantees that rep
 
 Choosing the right consistency pattern requires understanding your specific requirements:
 
-![Consistency Pattern Decision Tree](Images/consistency_decision_tree.png)
+![Consistency Pattern Decision Tree](images/consistency_decision_tree.png)
 
 ### Timeline Comparison
 
 The following ASCII diagram shows how data propagation differs across consistency patterns:
 
-![Consistency Timelines Comparison](Images/consistency_timelines.png)
+![Consistency Timelines Comparison](images/consistency_timelines.png)
 
 ### Cost Comparison
 
@@ -409,7 +409,7 @@ Modern systems often implement hybrid approaches:
 
 **Read-Your-Writes Consistency**: This hybrid pattern guarantees that a client will always read their own writes, regardless of the underlying consistency model. Implementing this requires sticky sessions or tracking client's last write timestamp.
 
-![Hybrid Read-Your-Writes Implementation](Images/hybrid_read_your_writes.png)
+![Hybrid Read-Your-Writes Implementation](images/hybrid_read_your_writes.png)
 
 **Monotonic Reads**: A pattern where reads from a client never go "backwards in time." This can be implemented by routing reads to the same replica or by tracking the client's "read watermark."
 
@@ -512,4 +512,4 @@ The key insights to remember are:
 
 7. **Test partition scenarios**: The true behavior of your consistency model is revealed during network partitions.
 
-![Consistency Patterns Quick Reference](Images/consistency_quick_reference.png)
+![Consistency Patterns Quick Reference](images/consistency_quick_reference.png)

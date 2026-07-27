@@ -22,7 +22,7 @@ The CAP Theorem proposes that a distributed data store can provide only two of t
 
 **Partition Tolerance** means the system continues to operate despite network partitions that prevent communication between nodes. Network partitions are inevitable in distributed systems—they occur when network links fail, routers malfunction, or data centers lose connectivity. A partition-tolerant system can detect partitions and handle them gracefully.
 
-![The CAP Triangle](./Images/cap_triangle.png)
+![The CAP Triangle](./images/cap_triangle.png)
 
 ### Why Partitions Are Inevitable
 
@@ -40,7 +40,7 @@ During a network partition, you have only two viable options:
 
 **Availability over Consistency (AP Systems)**: When a partition occurs, the system continues to serve requests using locally available data, even if that data might be stale or conflicting with other replicas. This choice prioritizes continued operation over strict consistency.
 
-![CP vs AP Behavior During Partition](./Images/cp_vs_ap_behavior.png)
+![CP vs AP Behavior During Partition](./images/cp_vs_ap_behavior.png)
 
 ---
 
@@ -64,7 +64,7 @@ AP systems maintain availability during partitions by allowing replicas to diver
 
 The key mechanism enabling AP systems to continue during partitions is the use of eventually consistent data structures and conflict resolution algorithms. Rather than enforcing strict consistency, AP systems use techniques like version vectors, vector clocks, or last-writer-wins to handle concurrent updates and detect conflicts.
 
-![AP System Architecture](./Images/ap_system_architecture.png)
+![AP System Architecture](./images/ap_system_architecture.png)
 
 ### Conflict Resolution Strategies
 
@@ -102,7 +102,7 @@ CP systems maintain consistency by detecting partitions and taking action to pre
 
 The key mechanism enabling CP systems to maintain consistency is quorum-based replication. Writes must be acknowledged by a majority of replicas before being considered committed. During a partition, only the partition with a quorum can accept writes, ensuring that no two partitions can accept conflicting writes simultaneously.
 
-![CP System Architecture](./Images/cp_system_architecture.png)
+![CP System Architecture](./images/cp_system_architecture.png)
 
 ### Quorum and Consensus
 
@@ -136,7 +136,7 @@ The PACELC model extends CAP to address a limitation: CAP only describes behavio
 
 This extension recognizes that the consistency-latency trade-off exists even in the absence of partitions. Strong consistency requires coordination between nodes, which introduces latency. Eventual consistency allows nodes to operate independently, reducing latency but accepting temporary inconsistency.
 
-![PACELC Model](./Images/pacelc_model.png)
+![PACELC Model](./images/pacelc_model.png)
 
 ### PACELC in Practice
 
@@ -158,7 +158,7 @@ Beyond the binary CAP choice, systems implement various consistency patterns tha
 
 Strong consistency guarantees that after a write completes, all subsequent reads will see that write. The system behaves as if there is only a single copy of the data. Strong consistency is also called linearizability or sequential consistency, and it provides the strongest guarantees about data state.
 
-![Strong Consistency Timeline](./Images/strong_consistency_timeline.png)
+![Strong Consistency Timeline](./images/strong_consistency_timeline.png)
 
 **When to use strong consistency**: Financial transactions, inventory management, authentication systems, any use case where incorrect data could cause serious problems. Strong consistency is also necessary when operations depend on each other—for example, when you write data and then read it in the same request.
 
@@ -168,7 +168,7 @@ Strong consistency guarantees that after a write completes, all subsequent reads
 
 Eventual consistency guarantees that if no new updates are made to an object, all replicas will eventually return the same value. The system will converge to a consistent state given enough time without new writes. Eventual consistency accepts that reads may return stale data during the convergence window.
 
-![Eventual Consistency Timeline](./Images/eventual_consistency_timeline.png)
+![Eventual Consistency Timeline](./images/eventual_consistency_timeline.png)
 
 **When to use eventual consistency**: Social media feeds, product catalogs, analytics dashboards, any use case where temporary inconsistency is tolerable and high availability is important. Eventual consistency is appropriate when the cost of unavailability exceeds the cost of stale data.
 
@@ -184,7 +184,7 @@ Weak consistency provides minimal guarantees about when updates become visible. 
 
 ### Comparison Table
 
-![Consistency Patterns Comparison](./Images/consistency_patterns_comparison.png)
+![Consistency Patterns Comparison](./images/consistency_patterns_comparison.png)
 
 ---
 
@@ -196,7 +196,7 @@ Most systems need different consistency levels for different operations. A shopp
 
 Designing for appropriate consistency means matching consistency guarantees to the semantic requirements of each operation. This approach, sometimes called "calibrated consistency," balances the need for correctness against the cost of strong consistency in latency and availability.
 
-![Example: E-Commerce Consistency Requirements](./Images/ecommerce_consistency_requirements.png)
+![Example: E-Commerce Consistency Requirements](./images/ecommerce_consistency_requirements.png)
 
 ### Designing for Failure
 

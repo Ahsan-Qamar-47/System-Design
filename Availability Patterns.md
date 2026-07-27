@@ -18,7 +18,7 @@ For a small startup, an hour of downtime might result in lost sales, frustrated 
 
 These realities have driven the development of sophisticated availability patterns that can handle various failure scenarios while maintaining acceptable service levels. Understanding these patterns—and knowing when to apply each one—represents essential knowledge for any system designer or engineer.
 
-![Availability Impact Matrix](Images/availability_impact_matrix.png)
+![Availability Impact Matrix](images/availability_impact_matrix.png)
 
 ## 1. Fail-Over Patterns
 
@@ -34,7 +34,7 @@ Active-passive failover represents the simpler of the two primary failover archi
 
 The mechanics of active-passive failover rely heavily on **heartbeat mechanisms**. Heartbeats are periodic signals sent between the primary and standby servers to confirm that the primary is still operational and responsive. These heartbeats typically occur at fixed intervals (often every few seconds) and include information about the sender's health status, load levels, and recent transaction activity.
 
-![Active-Passive Failover Architecture](Images/active_passive_failover.png)
+![Active-Passive Failover Architecture](images/active_passive_failover.png)
 
 The **standby state** of the passive server significantly impacts recovery time and is categorized into two types based on how thoroughly the standby is kept synchronized and ready:
 
@@ -52,7 +52,7 @@ Active-active failover represents a more complex but potentially more performant
 
 The fundamental difference from active-passive is that all nodes in an active-active configuration are capable of handling all types of traffic—not just serving as standby. This means both nodes can accept reads and writes, and incoming traffic is distributed across all operational nodes.
 
-![Active-Active Failover Architecture](Images/active_active_failover.png)
+![Active-Active Failover Architecture](images/active_active_failover.png)
 
 The routing mechanisms in active-active configurations differ from active-passive due to the need to balance traffic across multiple active nodes:
 
@@ -76,7 +76,7 @@ The effectiveness of any failover system depends on its ability to quickly and a
 
 **Health check depth** varies across implementations. Some systems only check whether the peer is reachable on the network (layer 3 connectivity). Others perform deeper checks, verifying that specific services are running, that application-level responses are healthy, or that performance metrics are within acceptable ranges. Deeper health checks provide more confidence that the node is truly operational but take longer to perform.
 
-![Health Check Depth Levels](Images/health_check_depth_levels.png)
+![Health Check Depth Levels](images/health_check_depth_levels.png)
 
 ### Failover Considerations and Challenges
 
@@ -114,7 +114,7 @@ Replication patterns can be categorized along several dimensions: the number of 
 
 Master-slave replication is the most straightforward replication topology. A single designated **master** (also called "primary") node processes all write operations, while one or more **slave** (also called "replica" or "standby") nodes store copies of the data and handle read operations.
 
-![Master-Slave Replication Architecture](Images/master_slave_replication.png)
+![Master-Slave Replication Architecture](images/master_slave_replication.png)
 
 The master node serves as the authoritative source of truth for the dataset. All modifications—inserts, updates, and deletes—must be submitted to the master. The master records these modifications in a **transaction log** (such as a write-ahead log or binary log) and propagates them to slave nodes through a replication stream.
 
@@ -132,7 +132,7 @@ Master-slave replication is widely used in production systems. MySQL's default r
 
 Master-master replication extends the replication model by allowing multiple nodes to accept writes. In this configuration, any node can serve as a master for writes, and changes are propagated bidirectionally among all masters.
 
-![Master-Master Replication Architecture](Images/master_master_replication.png)
+![Master-Master Replication Architecture](images/master_master_replication.png)
 
 Master-master replication addresses the write scalability limitation of master-slave by distributing writes across multiple nodes. However, this benefit comes at the cost of significantly increased complexity, particularly around **conflict resolution**.
 
@@ -156,7 +156,7 @@ The timing of replication—whether changes are propagated immediately or deferr
 
 **Synchronous replication** requires that a write be confirmed by one or more replicas before the write is considered complete. The master waits for acknowledgment from configured replicas before returning success to the client. This approach provides strong consistency guarantees because data is known to be persisted on multiple nodes before the write is acknowledged.
 
-![Synchronous Replication Flow](Images/synchronous_replication_flow.png)
+![Synchronous Replication Flow](images/synchronous_replication_flow.png)
 
 Synchronous replication provides the highest level of data safety because data is known to exist on multiple nodes before the write is confirmed. If the master fails immediately after acknowledging a write, that write exists on at least one replica and can be recovered.
 
@@ -164,7 +164,7 @@ However, synchronous replication impacts both **latency** and **availability**. 
 
 **Asynchronous replication** propagates changes in the background without waiting for replica confirmation. The master acknowledges the write immediately after persisting locally, and the replication to replicas happens later, typically through a dedicated replication thread or process.
 
-![Asynchronous Replication Flow](Images/asynchronous_replication_flow.png)
+![Asynchronous Replication Flow](images/asynchronous_replication_flow.png)
 
 Asynchronous replication minimizes write latency because the master does not wait for replica confirmation. This approach enables higher write throughput and better performance, particularly in distributed systems where replicas are geographically distant.
 
@@ -180,7 +180,7 @@ Beyond the leader-based replication discussed above, other topologies exist for 
 
 **Leaderless replication** eliminates the concept of a designated leader, allowing any node to accept reads and writes. Amazon DynamoDB and Apache Cassandra use leaderless replication. In these systems, clients write to any node, and changes are propagated to other nodes through a gossip protocol. Conflicts are resolved using quorum-based techniques (read from R nodes, write to W nodes, require W+R > N for strong reads).
 
-![Leaderless Replication](Images/leaderless_replication.png)
+![Leaderless Replication](images/leaderless_replication.png)
 
 **Chain replication** organizes nodes in a chain, where the head accepts writes and the tail confirms durability. Writes flow through intermediate nodes but are not complete until reaching the tail. Chain replication provides strong consistency with good throughput and is used in systems like Microsoft's Copilot.
 
@@ -228,7 +228,7 @@ Understanding availability calculations enables architects to make informed deci
 
 The "nines" convention expresses availability as a series of percentages with increasing numbers of "9" digits. Each additional "9" represents an order of magnitude improvement in allowed downtime.
 
-![The Nines of Availability](Images/the_nines_of_availability.png)
+![The Nines of Availability](images/the_nines_of_availability.png)
 
 The following table provides a comprehensive breakdown of allowed downtime across various availability levels:
 
@@ -255,7 +255,7 @@ The mathematical foundation of availability calculations enables precise predict
 
 - **MTTR (Mean Time To Repair)**: The average time required to repair a failed component and restore service. Lower MTTR indicates better recovery capabilities.
 
-![Availability from MTBF and MTTR](Images/availability_mtbf_mttr.png)
+![Availability from MTBF and MTTR](images/availability_mtbf_mttr.png)
 
 ### Series and Parallel Availability
 
@@ -263,7 +263,7 @@ System availability depends critically on how components are connected. Two fund
 
 **Series Configuration** places components sequentially, where all components must be operational for the system to function. The system fails if any single component fails.
 
-![Series Configuration](Images/series_configuration.png)
+![Series Configuration](images/series_configuration.png)
 
 The formula for series availability is multiplicative:
 
@@ -273,7 +273,7 @@ This formula reveals a critical insight: **adding components in series reduces o
 
 **Parallel Configuration** places components redundantly, where the system remains operational if at least one component is operational.
 
-![Parallel Configuration](Images/parallel_configuration.png)
+![Parallel Configuration](images/parallel_configuration.png)
 
 The formula for parallel availability uses the complement of failure probability:
 
@@ -291,13 +291,13 @@ Applying series and parallel calculations to realistic system architectures demo
 
 Consider a web application with three tiers: load balancer (99.99%), application servers (99.9% × 2 in parallel), and database (99.99%):
 
-![Simple Web Application Availability](Images/web_app_availability_calc.png)
+![Simple Web Application Availability](images/web_app_availability_calc.png)
 
 **Example 2: E-Commerce Platform**
 
 A more complex e-commerce platform with multiple redundant components:
 
-![E-Commerce Platform Availability](Images/ecommerce_platform_availability.png)
+![E-Commerce Platform Availability](images/ecommerce_platform_availability.png)
 
 ### Service Level Agreements (SLAs)
 
@@ -313,7 +313,7 @@ A more complex e-commerce platform with multiple redundant components:
 
 - **Remedies**: What happens if the target is missed (service credits, refunds)
 
-![Cloud Database Service SLA](Images/cloud_database_sla.png)
+![Cloud Database Service SLA](images/cloud_database_sla.png)
 
 **Service Level Objectives (SLOs)** are internal targets that organizations set for themselves, often more stringent than SLAs to provide a buffer. SLOs drive internal engineering decisions about reliability investments.
 
@@ -321,7 +321,7 @@ A more complex e-commerce platform with multiple redundant components:
 
 Meeting a 99.99% SLA (about 52 minutes of allowed downtime per year) has specific implications:
 
-![Design Requirements for 99.99% Availability](Images/design_requirements_9999.png)
+![Design Requirements for 99.99% Availability](images/design_requirements_9999.png)
 
 ### Availability Anti-Patterns
 
@@ -387,4 +387,4 @@ Availability patterns form an essential part of distributed system design, addre
 
 The relationship between availability and other system properties—consistency (CAP theorem), performance (latency vs. correctness trade-offs), and cost (80/20 rule application)—must be considered holistically. Availability does not exist in isolation but as part of a system-wide design that balances multiple competing concerns.
 
-![Availability Patterns Quick Reference](Images/availability_patterns_quick_reference.png)
+![Availability Patterns Quick Reference](images/availability_patterns_quick_reference.png)

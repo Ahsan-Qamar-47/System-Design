@@ -88,7 +88,7 @@ Distinguish between functional requirements—what the system must do—and non-
 
 A useful framework for eliciting requirements is the **Scale-Queries-Architecture (SQA) method**:
 
-![Scale-Queries-Architecture (SQA) Framework](./Images/SQA-Method-Framework.png)
+![Scale-Queries-Architecture (SQA) Framework](./images/SQA-Method-Framework.png)
 
 #### Step 2: Identify the Scope of the System
 
@@ -122,7 +122,7 @@ At this stage, resist the temptation to specify technology choices. Focus on con
 
 The high-level design should address the core concerns identified in scope definition:
 
-![High-Level Design Checklist](./Images/High-Level-Design-Checklist.png)
+![High-Level Design Checklist](./images/High-Level-Design-Checklist.png)
 
 #### Step 5: Refine and Iterate the Design
 
